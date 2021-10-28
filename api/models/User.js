@@ -55,6 +55,9 @@ const UserSchema = new mongoose.Schema(
     relationship: {
       type: Number,
       enum: [1, 2, 3],
+      // 1 === single
+      // 2 === married
+      // 3 === complicated
     },
   },
   { timestamps: true }
