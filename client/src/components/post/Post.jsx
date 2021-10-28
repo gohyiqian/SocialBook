@@ -4,22 +4,22 @@ import { MoreVert } from "@material-ui/icons";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { format } from "timeago.js";
+import { Link } from "react-router-dom";
 
-export default function Post({ post }) {
+const Post = ({ post }) => {
   const [like, setLike] = useState(post.likes.length);
   const [isLiked, setIsLiked] = useState(false);
-  // Public Folder
   const [user, setUser] = useState({});
-
+  // Public Folder
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await axios.get(`users/${post.userId}`);
+      const res = await axios.get(`/users/${post.userId}`);
       setUser(res.data);
     };
     fetchUser();
-  }, []);
+  }, [post.userId]);
 
   const likeHandler = () => {
     // if liked before, clicking again will minus 1 like
@@ -32,12 +32,18 @@ export default function Post({ post }) {
       <div className="postWrapper">
         <div className="postTop">
           <div className="postTopLeft">
-            <img
-              className="postProfileImg"
-              // if no profile Pic, use avatar image from public/assets
-              src={user.profilePicture || PF + "person/noAvatar.png"}
-              alt=""
-            />
+            <Link to={`/profile/${user.username}`}>
+              <img
+                className="postProfileImg"
+                // if no profile Pic, use avatar image from public/assets
+                src={
+                  user.profilePicture
+                    ? PF + user.profilePicture
+                    : PF + "person/noAvatar.png"
+                }
+                alt=""
+              />
+            </Link>
             <span className="postUsername">{user.username}</span>
             <span className="postDate">{format(post.createdAt)}</span>
           </div>
@@ -73,4 +79,6 @@ export default function Post({ post }) {
       </div>
     </div>
   );
-}
+};
+
+export default Post;

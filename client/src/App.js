@@ -2,21 +2,31 @@ import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import Profile from "./pages/profile/Profile";
 import Register from "./pages/register/Register";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 
 function App() {
+  const user = true; //simulate user logged in
   return (
     <Router>
       <Switch>
         <Route exact path="/">
-          <Home />
+          {/* if user is logged in/exist, show home page, else show register page */}
+          {user ? <Home /> : <Register />}
         </Route>
-        <Route path="/login">
-          <Login />
-        </Route>
+
+        {/* if user is logged in/exist, redirect to home, else go Login page */}
+        <Route path="/login">{user ? <Redirect to="/" /> : <Login />}</Route>
+
+        {/* if user is logged in/exist,  redirect to home, else go Register page */}
         <Route path="/register">
-          <Register />
+          {user ? <Redirect to="/" /> : <Register />}
         </Route>
+
         <Route path="/profile/:username">
           <Profile />
         </Route>

@@ -69,7 +69,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//GET ALL POSTS FROM USERS THAT THE  USER IS FOLLOWING
+//GET ALL POSTS FROM USERS THAT THE USER IS FOLLOWING
 router.get("/timeline/:userId", async (req, res) => {
   try {
     const currentUser = await User.findById(req.params.userId);
@@ -81,6 +81,18 @@ router.get("/timeline/:userId", async (req, res) => {
     );
     // concat all posts from friend
     res.status(200).json(userPosts.concat(...friendPosts));
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// GET ALL USER'S OWN POST
+router.get("/profile/:username", async (req, res) => {
+  try {
+    // find this user
+    const user = await User.findOne({ username: req.params.username });
+    const posts = await Post.find({ userId: user._id });
+    res.status(200).json(posts);
   } catch (err) {
     res.status(500).json(err);
   }
