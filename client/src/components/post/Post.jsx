@@ -1,3 +1,4 @@
+// Post is basically cards with an image, desc, like buttons
 import "./post.css";
 import { MoreVert } from "@material-ui/icons";
 // import { Users } from "../../dummyData";

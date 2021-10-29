@@ -8,9 +8,13 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "./context/AuthContext";
 
 function App() {
-  const user = true; //simulate user logged in
+  //simulate user logged in
+  // const user = false;
+  const { user } = useContext(AuthContext);
   return (
     <Router>
       <Switch>
@@ -22,7 +26,7 @@ function App() {
         {/* if user is logged in/exist, redirect to home, else go Login page */}
         <Route path="/login">{user ? <Redirect to="/" /> : <Login />}</Route>
 
-        {/* if user is logged in/exist,  redirect to home, else go Register page */}
+        {/* if user is logged in/exist, redirect to home, else go Register page */}
         <Route path="/register">
           {user ? <Redirect to="/" /> : <Register />}
         </Route>

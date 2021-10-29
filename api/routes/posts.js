@@ -16,8 +16,10 @@ router.post("/", async (req, res) => {
 // UPDATE POST
 router.put("/:id", async (req, res) => {
   try {
+    // find the post by post id
     const post = await Post.findById(req.params.id);
     if (post.userId === req.body.userId) {
+      // update with what is in the req body
       await post.updateOne({ $set: req.body });
       res.status(200).json("The post has been updated");
     } else {
@@ -31,6 +33,7 @@ router.put("/:id", async (req, res) => {
 // DELETE POST
 router.delete("/:id", async (req, res) => {
   try {
+    // find the post by post id
     const post = await Post.findById(req.params.id);
     if (post.userId === req.body.userId) {
       await post.deleteOne();
@@ -46,6 +49,7 @@ router.delete("/:id", async (req, res) => {
 //LIKE OR DISLIKE A POST
 router.put("/:id/like", async (req, res) => {
   try {
+    // find the post by post id
     const post = await Post.findById(req.params.id);
     if (!post.likes.includes(req.body.userId)) {
       await post.updateOne({ $push: { likes: req.body.userId } });
@@ -69,11 +73,14 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//GET ALL POSTS FROM USERS THAT THE USER IS FOLLOWING
+//GET ALL POSTS FROM USERS THAT THE USER IS FOLLOWING + USER's OWN POST
 router.get("/timeline/:userId", async (req, res) => {
   try {
+    // find current user id based on params on url
     const currentUser = await User.findById(req.params.userId);
+    // find all the posts by this user id
     const userPosts = await Post.find({ userId: currentUser._id });
+    // find all the user's friend(ppl that the user is following) post
     const friendPosts = await Promise.all(
       currentUser.followings.map((friendId) => {
         return Post.find({ userId: friendId });
