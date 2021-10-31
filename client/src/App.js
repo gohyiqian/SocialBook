@@ -2,6 +2,7 @@ import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import Profile from "./pages/profile/Profile";
 import Register from "./pages/register/Register";
+import Messenger from "./pages/messenger/Messenger";
 import {
   BrowserRouter as Router,
   Switch,
@@ -29,6 +30,11 @@ function App() {
         {/* if user is logged in/exist, redirect to home, else go Register page */}
         <Route path="/register">
           {user ? <Redirect to="/" /> : <Register />}
+        </Route>
+
+        {/* if user is not logged in/exist, redirect to home, else go Messenger page */}
+        <Route path="/messenger">
+          {!user ? <Redirect to="/" /> : <Messenger />}
         </Route>
 
         <Route path="/profile/:username">
