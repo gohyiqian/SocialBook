@@ -6,14 +6,13 @@ import { AuthContext } from "../../context/AuthContext";
 
 const Topbar = () => {
   const { user } = useContext(AuthContext);
-  console.log(user.profilePicture);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
 
   return (
     <div className="topbarContainer">
       <div className="topbarLeft">
         <Link to="/" style={{ textDecoration: "none" }}>
-          <span className="logo">SocialCookBook</span>
+          <span className="logo">SocialBook</span>
         </Link>
       </div>
       <div className="topbarCenter">
