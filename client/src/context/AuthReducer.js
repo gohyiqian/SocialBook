@@ -22,7 +22,9 @@ const AuthReducer = (state, action) => {
       return {
         ...state,
         user: {
+          // take all properties everything inside the user
           ...state.user,
+          //  take all the ppl user is following, add 1 more user to the array
           followings: [...state.user.followings, action.payload],
         },
       };
@@ -30,7 +32,9 @@ const AuthReducer = (state, action) => {
       return {
         ...state,
         user: {
+          // take all properties inside the user
           ...state.user,
+          // filter out the user that user wants to unfollow
           followings: state.user.followings.filter(
             (following) => following !== action.payload
           ),
