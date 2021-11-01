@@ -19,9 +19,13 @@ const Messenger = () => {
   const scrollRef = useRef();
   const socket = useRef();
 
+  // connect to socket just once when mount
   useEffect(() => {
+    // socketID changes everytime browser refresh
     socket.current = io("ws://localhost:8900");
+
     socket.current.on("getMessage", (data) => {
+      // set to MongoDB
       setArrivalMessage({
         sender: data.senderId,
         text: data.text,
@@ -30,6 +34,28 @@ const Messenger = () => {
     });
   }, []);
 
+  // Update messages if there are changes in the arrival messages
+  useEffect(() => {
+    arrivalMessage &&
+      // message can be empty also
+      currentChat?.members.includes(arrivalMessage.sender) &&
+      // includes pre messages
+      setMessages((prev) => [...prev, arrivalMessage]);
+  }, [arrivalMessage, currentChat]);
+
+  useEffect(() => {
+    // SEND EVENT TO SOCKET SERVER
+    socket.current.emit("addUser", user._id);
+    // TAKE EVENT FROM SOCKER SERVER
+    socket.current.on("getUsers", (users) => {
+      // filter socketid that are friends
+      setOnlineUsers(
+        user.followings.filter((f) => users.some((u) => u.userId === f))
+      );
+    });
+  }, [user]);
+
+  // GET Conversations
   useEffect(() => {
     const getConversations = async () => {
       try {
@@ -43,6 +69,7 @@ const Messenger = () => {
     getConversations();
   }, [user._id]);
 
+  // GET MESSAGE
   useEffect(() => {
     const getMessages = async () => {
       try {
@@ -55,6 +82,7 @@ const Messenger = () => {
     getMessages();
   }, [currentChat]);
 
+  // HANDLESUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
     const message = {
@@ -63,15 +91,16 @@ const Messenger = () => {
       conversationId: currentChat._id,
     };
 
-    // const receiverId = currentChat.members.find(
-    //   (member) => member !== user._id
-    // );
+    const receiverId = currentChat.members.find(
+      (member) => member !== user._id
+    );
 
-    // socket.current.emit("sendMessage", {
-    //   senderId: user._id,
-    //   receiverId,
-    //   text: newMessage,
-    // });
+    // SEND EVENT TO SOCKET
+    socket.current.emit("sendMessage", {
+      senderId: user._id,
+      receiverId,
+      text: newMessage,
+    });
 
     try {
       const res = await axios.post("/messages", message);
@@ -133,7 +162,11 @@ const Messenger = () => {
         </div>
         <div className="chatOnline">
           <div className="chatOnlineWrapper">
-            <ChatOnline />
+            <ChatOnline
+              onlineUsers={onlineUsers}
+              currentId={user._id}
+              setCurrentChat={setCurrentChat}
+            />
           </div>
         </div>
       </div>
