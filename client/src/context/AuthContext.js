@@ -8,9 +8,9 @@ const INITIAL_STATE = {
   error: false,
 };
 
+// EXPORT CONTEXT
 export const AuthContext = createContext(INITIAL_STATE);
 
-// PROVIDE CONTEXT
 export const AuthContextProvider = ({ children }) => {
   //onClick => Action => Reducer => decides to update State
   const [state, dispatch] = useReducer(AuthReducer, INITIAL_STATE);
@@ -20,6 +20,7 @@ export const AuthContextProvider = ({ children }) => {
   }, [state.user]);
 
   return (
+    // PROVIDE CONTEXT
     <AuthContext.Provider
       value={{
         user: state.user,
